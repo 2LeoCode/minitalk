@@ -7,7 +7,7 @@ void	send_message_to_server(pid_t ppid, const unsigned char *msg)
 
 	ft_putstr("Sending message `");
 	ft_putstr((const char *)msg);
-	ft_putstr("` to server_sources: ");
+	ft_putstr("` to server: ");
 	ft_putnbr(ppid);
 	ft_putchar('\n');
 	while (*msg)
@@ -30,7 +30,6 @@ void	send_message_to_server(pid_t ppid, const unsigned char *msg)
 		kill(ppid, SIGUSR2);
 		usleep(100);
 	}
-	ft_putstr("Message successfully sent\n");
 }
 
 int	main(int argc, char **argv)

@@ -8,7 +8,7 @@ void	sig_handler(int sig)
 
 	if (is_new_message)
 	{
-		ft_putstr("Received message from client_sources: ");
+		ft_putstr("Received message from client: ");
 		is_new_message = false;
 	}
 	if (sig == SIGUSR1)
@@ -34,13 +34,13 @@ int	main(void)
 	const pid_t			pid = getpid();
 
 	sigemptyset(&act.sa_mask);
-	sigaddset(&act.sa_mask, SIGUSR1);
-	sigaddset(&act.sa_mask, SIGUSR2);
+	//sigaddset(&act.sa_mask, SIGUSR1);
+	//sigaddset(&act.sa_mask, SIGUSR2);
 	act.sa_handler = sig_handler;
 
 	sigaction(SIGUSR1, &act, 0);
 	sigaction(SIGUSR2, &act, 0);
-	ft_putstr("Started minitalk server_sources with pid: ");
+	ft_putstr("Started minitalk server with pid: ");
 	ft_putnbr(pid);
 	ft_putchar('\n');
 	while (1)
