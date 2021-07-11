@@ -34,8 +34,6 @@ int	main(void)
 	const pid_t			pid = getpid();
 
 	sigemptyset(&act.sa_mask);
-	//sigaddset(&act.sa_mask, SIGUSR1);
-	//sigaddset(&act.sa_mask, SIGUSR2);
 	act.sa_handler = sig_handler;
 
 	sigaction(SIGUSR1, &act, 0);
