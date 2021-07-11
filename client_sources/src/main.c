@@ -19,7 +19,7 @@ void	send_message_to_server(pid_t ppid, const unsigned char *msg)
 				kill(ppid, SIGUSR1);
 			else
 				kill(ppid, SIGUSR2);
-			usleep(1000);
+			usleep(10000);
 			mask >>= 1;
 		}
 		msg++;
@@ -28,7 +28,7 @@ void	send_message_to_server(pid_t ppid, const unsigned char *msg)
 	while (++i < 8)
 	{
 		kill(ppid, SIGUSR2);
-		usleep(1000);
+		usleep(10000);
 	}
 }
 
