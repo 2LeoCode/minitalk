@@ -39,3 +39,14 @@ int	ft_putnbr(int nb)
 	ret += ft_putnbr(nb % 10);
 	return (ret);
 }
+
+void	*ft_memcpy(void *dst, const void *src, size_t n)
+{
+	const char	*src_s = (const char *)src;
+	char		*dst_s;
+
+	dst_s = (char *)dst;
+	while (n--)
+		*dst_s++ = *src_s++;
+	return (dst);
+}

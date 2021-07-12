@@ -1,31 +1,40 @@
 #include <minitalk_server.h>
 
-void	sig_handler(int sig)
+void	display_and_free_message(t_string *msg)
+{
+	ft_putstr("Received message from client: ");
+	ft_putstr(msg->data);
+	free(msg);
+	ft_putchar('\n');
+}
+
+void	sig_handler(int sig, siginfo_t *info, void *ucontext)
 {
 	static unsigned char	character;
-	static unsigned char	mask = 1 << 7;
+	static t_string			*str;
 	static bool				is_new_message = true;
+	static unsigned char	mask = 1 << 7;
 
-	if (is_new_message)
-	{
-		ft_putstr("Received message from client: ");
-		is_new_message = false;
-	}
+	(void)ucontext;
+	if (is_new_message && init_string(&str))
+		ft_abort();
+	is_new_message = false;
 	if (sig == SIGUSR1)
 		character |= mask;
 	mask >>= 1;
 	if (!mask)
 	{
-		if (character)
-			ft_putchar(character);
-		else
+		if (!character)
 		{
-			ft_putchar('\n');
+			display_and_free_message(str);
 			is_new_message = true;
 		}
+		else if (ft_strappend(&str, (char)character))
+			ft_abort();
 		character = 0;
 		mask = 1 << 7;
 	}
+	kill(info->si_pid, SIGUSR1);
 }
 
 int	main(void)
@@ -34,8 +43,8 @@ int	main(void)
 	const pid_t			pid = getpid();
 
 	sigemptyset(&act.sa_mask);
-	act.sa_handler = sig_handler;
-
+	act.sa_sigaction = sig_handler;
+	act.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &act, 0);
 	sigaction(SIGUSR2, &act, 0);
 	ft_putstr("Started minitalk server with pid: ");

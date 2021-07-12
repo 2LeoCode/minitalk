@@ -14,6 +14,7 @@ OBJFOLD =	$(addprefix $(OBJDIR)/,\
 
 SRC =		$(addsuffix $(word 1, $(.SUFFIXES)),\
 			utils\
+			utils_2\
 			main)
 INC =		$(addsuffix $(word 3, $(.SUFFIXES)),\
 			minitalk_server)
@@ -31,7 +32,7 @@ OBJ =		$(addprefix $(OBJDIR)/,\
 				$(SRC:$(word 1, $(.SUFFIXES))=$(word 2, $(.SUFFIXES))))
 
 CC =		gcc
-CFLAGS =	-Wall -Wextra -Werror -I $(INCDIR) -fsanitize=address -g3
+CFLAGS =	-Wall -Wextra -Werror -I $(INCDIR) #-fsanitize=address -g3
 LCFLAGS =	-L . $(addprefix -l, $(LIB:lib%=%) $(DLIB:lib%=%))
 
 ifeq ($(OS), Darwin)
@@ -44,7 +45,7 @@ ifeq ($(OS), Darwin)
 	KCYN =		\x1B[36m
 	KWHT =		\x1B[37m
 else
-	KNRM =		\e[39mk/
+	KNRM =		\e[39m
 	KRED =		\e[31m
 	KGRN =		\e[32m
 	KYEL =		\e[33m
@@ -75,6 +76,8 @@ $(OBJDIR):
 	@printf "$(KYEL)➤ "
 	cp $^/$@ .
 	@printf "$(KNRM)"
+
+bonus: all
 
 $(NAME): $(OBJ)
 	@printf "$(KCYN)[  Linking  ]\n➤ "

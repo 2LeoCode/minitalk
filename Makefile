@@ -3,6 +3,12 @@ NAME =	client\
 
 all: $(NAME)
 
+bonus:
+	$(MAKE) bonus -C client_sources
+	$(MAKE) bonus -C server_sources
+	cp client_sources/client .
+	cp server_sources/server .
+
 $(NAME):
 	$(MAKE) -C client_sources
 	$(MAKE) -C server_sources

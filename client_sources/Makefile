@@ -1,38 +1,39 @@
-OS =		$(shell uname)
-SHELL =		/bin/sh
-NAME =		client
+OS =			$(shell uname)
+SHELL =			/bin/sh
+NAME =			client
 
-.SUFFIXES =	.c .o .h .a .dylib
+.SUFFIXES =		.c .o .h .a .dylib
 
-SRCDIR =	src
-INCDIR =	inc
-LIBDIR =	lib
+SRCDIR =		src
+INCDIR =		inc
+LIBDIR =		lib
 
-OBJDIR =	.obj
-OBJFOLD =	$(addprefix $(OBJDIR)/,\
-			)
+OBJDIR =		.obj
+OBJFOLD =		$(addprefix $(OBJDIR)/,\
+				)
 
-SRC =		$(addsuffix $(word 1, $(.SUFFIXES)),\
-			utils\
-			main)
-INC =		$(addsuffix $(word 3, $(.SUFFIXES)),\
-			minitalk_client)
+SRC =			$(addsuffix $(word 1, $(.SUFFIXES)),\
+				utils\
+				main)
+INC =			$(addsuffix $(word 3, $(.SUFFIXES)),\
+				minitalk_client)
 LIB =		
 DLIB =		
-LIBNAME =	$(foreach lib, $(LIB),\
-				$(lib)$(word 4, $(.SUFFIXES)))\
-			$(foreach lib, $(DLIB),\
-				$(lib)$(word 5, $(.SUFFIXES)))
-LIBMAKE =	$(addprefix $(LIBDIR)/, $(LIB))
-DLIBMAKE =	$(addprefix $(LIBDIR)/, $(DLIB))
+LIBNAME =		$(foreach lib, $(LIB),\
+					$(lib)$(word 4, $(.SUFFIXES)))\
+				$(foreach lib, $(DLIB),\
+					$(lib)$(word 5, $(.SUFFIXES)))
+LIBMAKE =		$(addprefix $(LIBDIR)/, $(LIB))
+DLIBMAKE =		$(addprefix $(LIBDIR)/, $(DLIB))
 
 
-OBJ =		$(addprefix $(OBJDIR)/,\
-				$(SRC:$(word 1, $(.SUFFIXES))=$(word 2, $(.SUFFIXES))))
+OBJ =			$(addprefix $(OBJDIR)/,\
+					$(SRC:$(word 1, $(.SUFFIXES))=$(word 2, $(.SUFFIXES))))
 
-CC =		gcc
-CFLAGS =	-Wall -Wextra -Werror -I $(INCDIR) -fsanitize=address -g3
-LCFLAGS =	-L . $(addprefix -l, $(LIB:lib%=%) $(DLIB:lib%=%))
+CC =			gcc
+CFLAGS =		-Wall -Wextra -Werror -I $(INCDIR) #-fsanitize=address -g3
+LCFLAGS =		-L . $(addprefix -l, $(LIB:lib%=%) $(DLIB:lib%=%))
+BONUSFLAGS =	
 
 ifeq ($(OS), Darwin)
 	KNRM =		\x1B[0m
@@ -44,7 +45,7 @@ ifeq ($(OS), Darwin)
 	KCYN =		\x1B[36m
 	KWHT =		\x1B[37m
 else
-	KNRM =		\e[39mk/
+	KNRM =		\e[39m
 	KRED =		\e[31m
 	KGRN =		\e[32m
 	KYEL =		\e[33m
@@ -76,6 +77,9 @@ $(OBJDIR):
 	cp $^/$@ .
 	@printf "$(KNRM)"
 
+bonus:
+	$(MAKE) BONUSFLAGS=-DBONUS=1
+
 $(NAME): $(OBJ)
 	@printf "$(KCYN)[  Linking  ]\n➤ "
 	$(CC) $(CFLAGS) $^ -o $@ $(LCFLAGS)
@@ -83,7 +87,7 @@ $(NAME): $(OBJ)
 
 $(OBJDIR)/%$(word 2, $(.SUFFIXES)): $(SRCDIR)/%$(word 1, $(.SUFFIXES)) $(addprefix $(INCDIR)/, $(INC))
 	@printf "$(KMAG)[  Compiling  ]\n➤ "
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(BONUSFLAGS) -c $< -o $@
 	@printf "$(KNRM)"
 
 clean:

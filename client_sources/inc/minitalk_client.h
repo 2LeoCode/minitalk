@@ -3,6 +3,12 @@
 
 # include <unistd.h>
 # include <signal.h>
+# include <stdbool.h>
+# include <stdlib.h>
+
+# ifndef BONUS
+#  define BONUS 0
+# endif
 
 int		ft_atoi(const char *s);
 size_t	ft_strlen(const char *s);
