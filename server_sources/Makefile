@@ -15,6 +15,7 @@ OBJFOLD =	$(addprefix $(OBJDIR)/,\
 SRC =		$(addsuffix $(word 1, $(.SUFFIXES)),\
 			utils\
 			utils_2\
+			main_bonus\
 			main)
 INC =		$(addsuffix $(word 3, $(.SUFFIXES)),\
 			minitalk_server)
@@ -32,8 +33,10 @@ OBJ =		$(addprefix $(OBJDIR)/,\
 				$(SRC:$(word 1, $(.SUFFIXES))=$(word 2, $(.SUFFIXES))))
 
 CC =		gcc
-CFLAGS =	-Wall -Wextra -Werror -I $(INCDIR) #-fsanitize=address -g3
+CFLAGS =	-Wall -Wextra -Werror -I $(INCDIR) -fsanitize=address -g3
 LCFLAGS =	-L . $(addprefix -l, $(LIB:lib%=%) $(DLIB:lib%=%))
+BONUSFLAGS =
+BONUSLFLAGS =
 
 ifeq ($(OS), Darwin)
 	KNRM =		\x1B[0m
@@ -77,16 +80,17 @@ $(OBJDIR):
 	cp $^/$@ .
 	@printf "$(KNRM)"
 
-bonus: all
+bonus:
+	$(MAKE) BONUSFLAGS=-DBONUS=1 BONUSLFLAGS=-lpthread
 
 $(NAME): $(OBJ)
 	@printf "$(KCYN)[  Linking  ]\n➤ "
-	$(CC) $(CFLAGS) $^ -o $@ $(LCFLAGS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LCFLAGS) $(BONUSLFLAGS)
 	@printf "$(KNRM)"
 
 $(OBJDIR)/%$(word 2, $(.SUFFIXES)): $(SRCDIR)/%$(word 1, $(.SUFFIXES)) $(addprefix $(INCDIR)/, $(INC))
 	@printf "$(KMAG)[  Compiling  ]\n➤ "
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(BONUSFLAGS) -c $< -o $@
 	@printf "$(KNRM)"
 
 clean:

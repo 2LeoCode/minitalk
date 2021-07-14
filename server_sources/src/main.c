@@ -2,13 +2,14 @@
 
 void	display_and_free_message(t_string *msg)
 {
-	ft_putstr("Received message from client: ");
 	ft_putstr(msg->data);
 	free(msg);
 	ft_putchar('\n');
 }
 
-void	sig_handler(int sig, siginfo_t *info, void *ucontext)
+#if BONUS == 0
+
+static void	sig_handler(int sig, siginfo_t *info, void *ucontext)
 {
 	static unsigned char	character;
 	static t_string			*str;
@@ -54,3 +55,5 @@ int	main(void)
 		pause();
 	return (0);
 }
+
+#endif

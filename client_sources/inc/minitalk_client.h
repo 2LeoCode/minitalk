@@ -15,5 +15,6 @@ size_t	ft_strlen(const char *s);
 int		ft_putchar(int c);
 int		ft_putstr(const char *s);
 int		ft_putnbr(int nb);
+void	print_info_msg(pid_t ppid, const char *msg);
 
 #endif

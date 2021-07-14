@@ -14,6 +14,7 @@ OBJFOLD =		$(addprefix $(OBJDIR)/,\
 
 SRC =			$(addsuffix $(word 1, $(.SUFFIXES)),\
 				utils\
+				utils_2\
 				main)
 INC =			$(addsuffix $(word 3, $(.SUFFIXES)),\
 				minitalk_client)

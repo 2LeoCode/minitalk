@@ -1,19 +1,13 @@
 #include <minitalk_client.h>
 
-static bool	sig_caught = false;
+static volatile bool	g_sig_caught = false;
 
-static void	sig_handler(int sig)
-{
-	sig_caught = true;
-	(void)sig;
-}
-
-static void	wait_signal(void)
+void	wait_signal(void)
 {
 	int	cnt;
 
 	cnt = 0;
-	while (!sig_caught)
+	while (!g_sig_caught)
 	{
 		usleep(1);
 		if (++cnt == 1000)
@@ -22,22 +16,30 @@ static void	wait_signal(void)
 			exit(EXIT_FAILURE);
 		}
 	}
-	sig_caught = false;
+	g_sig_caught = false;
 }
 
-static void	print_info_msg(pid_t ppid, const char *msg)
+static void	sig_handler(int sig)
 {
-	ft_putstr("Sending message `");
-	ft_putstr(msg);
-	ft_putstr("` to server: ");
-	ft_putnbr(ppid);
-	ft_putchar('\n');
+	g_sig_caught = true;
+	(void)sig;
+}
+
+static void	send_null_byte(pid_t ppid)
+{
+	int	i;
+
+	i = -1;
+	while (++i < 8)
+	{
+		kill(ppid, SIGUSR2);
+		wait_signal();
+	}	
 }
 
 static void	send_message_to_server(pid_t ppid, const unsigned char *msg)
 {
 	unsigned char	mask;
-	int				i;
 
 	print_info_msg(ppid, (const char *)msg);
 	while (*msg)
@@ -54,12 +56,7 @@ static void	send_message_to_server(pid_t ppid, const unsigned char *msg)
 		}
 		msg++;
 	}
-	i = -1;
-	while (++i < 8)
-	{
-		kill(ppid, SIGUSR2);
-		wait_signal();
-	}
+	send_null_byte(ppid);
 	if (BONUS)
 		ft_putstr("Message successfully sent\n");
 }
